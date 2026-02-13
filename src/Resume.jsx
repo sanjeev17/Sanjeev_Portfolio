@@ -1,6 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+const resumeImage = new URL(
+  '../assets/resume/Sanjeev_Rai_Creative_Technologist.png',
+  import.meta.url
+).href;
+
 const Resume = () => {
   return (
     <section
@@ -25,7 +30,7 @@ const Resume = () => {
           >
             {/* Resume Image */}
             <img
-              src="/assets/resume/Sanjeev_Rai_Creative_Technologist.png"
+              src={resumeImage}
               alt="Sanjeev Rai Resume"
               className="w-full border border-[var(--border)] rounded-sm"
             />

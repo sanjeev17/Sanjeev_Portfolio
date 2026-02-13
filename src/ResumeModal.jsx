@@ -1,6 +1,11 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const resumeImage = new URL(
+  '../assets/resume/Sanjeev_Rai_Creative_Technologist.png',
+  import.meta.url
+).href;
+
 const ResumeModal = ({ isOpen, onClose }) => {
   return (
     <AnimatePresence>
@@ -35,7 +40,7 @@ const ResumeModal = ({ isOpen, onClose }) => {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              src="/assets/resume/Sanjeev_Rai_Creative_Technologist.png"
+              src={resumeImage}
               alt="Sanjeev Rai Resume"
               className="w-full h-auto rounded-lg border border-[var(--accent)] hover:border-[var(--accent)] card-hover"
             />
