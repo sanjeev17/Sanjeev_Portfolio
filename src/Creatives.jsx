@@ -154,6 +154,7 @@ const Creatives = () => {
         const slider = sliderRef.current;
         const scrollWidth = slider.scrollWidth;
         const containerWidth = slider.offsetWidth;
+        let userInteracting = false;
 
         const startSliderAnimation = () => {
           if (sliderAnimationRef.current) {
@@ -169,6 +170,8 @@ const Creatives = () => {
         };
 
         const handleUserInteraction = () => {
+          userInteracting = true;
+          
           // Clear any existing timeout
           if (sliderTimeoutRef.current) {
             clearTimeout(sliderTimeoutRef.current);
@@ -180,20 +183,21 @@ const Creatives = () => {
             sliderAnimationRef.current = null;
           }
           
-          // Restart auto-scroll after 2 seconds of no interaction
+          // Restart auto-scroll after 3 seconds of no interaction
           sliderTimeoutRef.current = setTimeout(() => {
+            userInteracting = false;
             startSliderAnimation();
-          }, 2000);
+          }, 3000);
         };
 
         // Start animation
         startSliderAnimation();
 
         // Add event listeners to stop animation on user interaction
-        slider.addEventListener('wheel', handleUserInteraction);
-        slider.addEventListener('touchstart', handleUserInteraction);
+        slider.addEventListener('wheel', handleUserInteraction, { passive: true });
+        slider.addEventListener('touchstart', handleUserInteraction, { passive: true });
+        slider.addEventListener('touchmove', handleUserInteraction, { passive: true });
         slider.addEventListener('mousedown', handleUserInteraction);
-        slider.addEventListener('scroll', handleUserInteraction);
       }
 
       // Horizontal videos grid animation
@@ -261,6 +265,7 @@ const Creatives = () => {
         
         if (firstSet) {
           const scrollWidth = firstSet.offsetWidth;
+          let userInteracting = false;
           
           const startCollabAnimation = () => {
             if (collabAnimationRef.current) {
@@ -281,6 +286,8 @@ const Creatives = () => {
           };
 
           const handleCollabInteraction = () => {
+            userInteracting = true;
+            
             // Clear any existing timeout
             if (collabTimeoutRef.current) {
               clearTimeout(collabTimeoutRef.current);
@@ -292,20 +299,21 @@ const Creatives = () => {
               collabAnimationRef.current = null;
             }
             
-            // Restart auto-scroll after 2 seconds of no interaction
+            // Restart auto-scroll after 3 seconds of no interaction
             collabTimeoutRef.current = setTimeout(() => {
+              userInteracting = false;
               startCollabAnimation();
-            }, 2000);
+            }, 3000);
           };
 
           // Start animation
           startCollabAnimation();
 
           // Add event listeners to stop animation on user interaction
-          slider.addEventListener('wheel', handleCollabInteraction);
-          slider.addEventListener('touchstart', handleCollabInteraction);
+          slider.addEventListener('wheel', handleCollabInteraction, { passive: true });
+          slider.addEventListener('touchstart', handleCollabInteraction, { passive: true });
+          slider.addEventListener('touchmove', handleCollabInteraction, { passive: true });
           slider.addEventListener('mousedown', handleCollabInteraction);
-          slider.addEventListener('scroll', handleCollabInteraction);
         }
       }
     }, sectionRef);
