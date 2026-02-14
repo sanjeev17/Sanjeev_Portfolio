@@ -14,6 +14,10 @@ const Creatives = () => {
   const theatreRefs = useRef([]);
   const collabRef = useRef(null);
   const collabSliderRef = useRef(null);
+  const sliderAnimationRef = useRef(null);
+  const collabAnimationRef = useRef(null);
+  const sliderTimeoutRef = useRef(null);
+  const collabTimeoutRef = useRef(null);
 
   // 9:16 vertical videos (5 total) - for horizontal slider
   const verticalVideos = [
@@ -151,13 +155,41 @@ const Creatives = () => {
         const scrollWidth = slider.scrollWidth;
         const containerWidth = slider.offsetWidth;
 
-        gsap.to(slider, {
-          scrollLeft: scrollWidth - containerWidth,
-          duration: 30,
-          ease: 'none',
-          repeat: -1,
-          yoyo: true,
-        });
+        const startSliderAnimation = () => {
+          if (sliderAnimationRef.current) {
+            sliderAnimationRef.current.kill();
+          }
+          sliderAnimationRef.current = gsap.to(slider, {
+            scrollLeft: scrollWidth - containerWidth,
+            duration: 30,
+            ease: 'none',
+            repeat: -1,
+            yoyo: true,
+          });
+        };
+
+        const stopSliderAnimation = () => {
+          if (sliderTimeoutRef.current) {
+            clearTimeout(sliderTimeoutRef.current);
+          }
+          if (sliderAnimationRef.current) {
+            sliderAnimationRef.current.pause();
+          }
+          // Resume auto-scroll after 2 seconds of no interaction
+          sliderTimeoutRef.current = setTimeout(() => {
+            if (sliderAnimationRef.current) {
+              sliderAnimationRef.current.resume();
+            }
+          }, 2000);
+        };
+
+        // Start animation
+        startSliderAnimation();
+
+        // Add event listeners to pause on user interaction
+        slider.addEventListener('wheel', stopSliderAnimation);
+        slider.addEventListener('touchstart', stopSliderAnimation);
+        slider.addEventListener('mousedown', stopSliderAnimation);
       }
 
       // Horizontal videos grid animation
@@ -226,23 +258,65 @@ const Creatives = () => {
         if (firstSet) {
           const scrollWidth = firstSet.offsetWidth;
           
-          gsap.to(slider, {
-            scrollLeft: `+=${scrollWidth}`,
-            duration: 15,
-            ease: 'none',
-            repeat: -1,
-            modifiers: {
-              scrollLeft: (scrollLeft) => {
-                const maxScroll = slider.scrollWidth - slider.offsetWidth;
-                return parseFloat(scrollLeft) % scrollWidth;
+          const startCollabAnimation = () => {
+            if (collabAnimationRef.current) {
+              collabAnimationRef.current.kill();
+            }
+            collabAnimationRef.current = gsap.to(slider, {
+              scrollLeft: `+=${scrollWidth}`,
+              duration: 15,
+              ease: 'none',
+              repeat: -1,
+              modifiers: {
+                scrollLeft: (scrollLeft) => {
+                  const maxScroll = slider.scrollWidth - slider.offsetWidth;
+                  return parseFloat(scrollLeft) % scrollWidth;
+                },
               },
-            },
-          });
+            });
+          };
+
+          const stopCollabAnimation = () => {
+            if (collabTimeoutRef.current) {
+              clearTimeout(collabTimeoutRef.current);
+            }
+            if (collabAnimationRef.current) {
+              collabAnimationRef.current.pause();
+            }
+            // Resume auto-scroll after 2 seconds of no interaction
+            collabTimeoutRef.current = setTimeout(() => {
+              if (collabAnimationRef.current) {
+                collabAnimationRef.current.resume();
+              }
+            }, 2000);
+          };
+
+          // Start animation
+          startCollabAnimation();
+
+          // Add event listeners to pause on user interaction
+          slider.addEventListener('wheel', stopCollabAnimation);
+          slider.addEventListener('touchstart', stopCollabAnimation);
+          slider.addEventListener('mousedown', stopCollabAnimation);
         }
       }
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      if (sliderTimeoutRef.current) {
+        clearTimeout(sliderTimeoutRef.current);
+      }
+      if (collabTimeoutRef.current) {
+        clearTimeout(collabTimeoutRef.current);
+      }
+      if (sliderAnimationRef.current) {
+        sliderAnimationRef.current.kill();
+      }
+      if (collabAnimationRef.current) {
+        collabAnimationRef.current.kill();
+      }
+    };
   }, []);
 
   return (
