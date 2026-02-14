@@ -168,28 +168,32 @@ const Creatives = () => {
           });
         };
 
-        const stopSliderAnimation = () => {
+        const handleUserInteraction = () => {
+          // Clear any existing timeout
           if (sliderTimeoutRef.current) {
             clearTimeout(sliderTimeoutRef.current);
           }
+          
+          // Kill the animation completely to let user scroll freely
           if (sliderAnimationRef.current) {
-            sliderAnimationRef.current.pause();
+            sliderAnimationRef.current.kill();
+            sliderAnimationRef.current = null;
           }
-          // Resume auto-scroll after 2 seconds of no interaction
+          
+          // Restart auto-scroll after 2 seconds of no interaction
           sliderTimeoutRef.current = setTimeout(() => {
-            if (sliderAnimationRef.current) {
-              sliderAnimationRef.current.resume();
-            }
+            startSliderAnimation();
           }, 2000);
         };
 
         // Start animation
         startSliderAnimation();
 
-        // Add event listeners to pause on user interaction
-        slider.addEventListener('wheel', stopSliderAnimation);
-        slider.addEventListener('touchstart', stopSliderAnimation);
-        slider.addEventListener('mousedown', stopSliderAnimation);
+        // Add event listeners to stop animation on user interaction
+        slider.addEventListener('wheel', handleUserInteraction);
+        slider.addEventListener('touchstart', handleUserInteraction);
+        slider.addEventListener('mousedown', handleUserInteraction);
+        slider.addEventListener('scroll', handleUserInteraction);
       }
 
       // Horizontal videos grid animation
@@ -276,28 +280,32 @@ const Creatives = () => {
             });
           };
 
-          const stopCollabAnimation = () => {
+          const handleCollabInteraction = () => {
+            // Clear any existing timeout
             if (collabTimeoutRef.current) {
               clearTimeout(collabTimeoutRef.current);
             }
+            
+            // Kill the animation completely to let user scroll freely
             if (collabAnimationRef.current) {
-              collabAnimationRef.current.pause();
+              collabAnimationRef.current.kill();
+              collabAnimationRef.current = null;
             }
-            // Resume auto-scroll after 2 seconds of no interaction
+            
+            // Restart auto-scroll after 2 seconds of no interaction
             collabTimeoutRef.current = setTimeout(() => {
-              if (collabAnimationRef.current) {
-                collabAnimationRef.current.resume();
-              }
+              startCollabAnimation();
             }, 2000);
           };
 
           // Start animation
           startCollabAnimation();
 
-          // Add event listeners to pause on user interaction
-          slider.addEventListener('wheel', stopCollabAnimation);
-          slider.addEventListener('touchstart', stopCollabAnimation);
-          slider.addEventListener('mousedown', stopCollabAnimation);
+          // Add event listeners to stop animation on user interaction
+          slider.addEventListener('wheel', handleCollabInteraction);
+          slider.addEventListener('touchstart', handleCollabInteraction);
+          slider.addEventListener('mousedown', handleCollabInteraction);
+          slider.addEventListener('scroll', handleCollabInteraction);
         }
       }
     }, sectionRef);
